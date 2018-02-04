@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "auto-meme-steem-bot.fullname" . }}
+  labels:
+    app: {{ template "auto-meme-steem-bot.name" . }}
+    chart: {{ template "auto-meme-steem-bot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "auto-meme-steem-bot.name" . }}
+    release: {{ .Release.Name }}

@@ -1,11 +1,12 @@
 const express = require('express')
 const bot = require('./helpers/bot')
+const html = require('jade')
 
 var app = express()
 
 // Main page
 app.get('/', function (req, res) {
-  res.render('index')
+    res.send("I'm ok")
 })
 
 // Check on whether the bot is functioning

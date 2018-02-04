@@ -77,7 +77,7 @@ const defaults = {
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWKyX1knyGQp546ovy3wduYh4PLm9mu9dPMDTCmrsZheZ/kramermindblown.gif' }), 
         new Handler({ test: [ 'stormtrooper', 'storm trooper' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmaNgiCGS3BcPLLDTABEMZahZitP6yKD3sG1JtYYHEje5q/dancingstormtroopers.gif' }), 
-        new Handler({ test: [ 'avenge' ],
+        new Handler({ test: [ 'avenge', 'toothbrush', 'bathroom', 'wash up', 'wash-up', 'wash hands', 'washroom', 'restroom' ],
             meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
         new Handler({ test: [ 'shock' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
@@ -85,6 +85,16 @@ const defaults = {
             meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),
         new Handler({ test: [ 'happy birthday', "it's my birthday" ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmcEJYJP4CuCmSM6JtkfzYDbjm6PajWyGRhsUjsKDRSAfF/giphy%20(1).gif'}),
+        new Handler({ test: [ 'facepalm', 'face palm', 'face-palm'],
+            meme: 'https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png' }),
+        new Handler({ test: [ 'rage', 'frustration', 'frustrated', 'anger' ],
+            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmVuoC9KqWe9Lm2ZhNVBat9yio7VWZMDFgtovdSLcJrX7D/buttonmash.gif'}),
+        new Handler({ test: [ 'challenge' ], 
+            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmTTXAf2n9W3x1nmSNuhx3jTDWDXPnUUfSGjKnTbh4c7Ma/giphy%20(2).gif' }),
+        new Handler({ test: [ 'come at me', 'bring it', 'fight with me', 'argue with me' ],
+            meme: 'https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif' }),
+        new Handler({ test: [ 'amazing', 'wow', 'awesome', 'incredible' ],
+            meme: 'https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif' }),
         new Handler({ test: [ 'rubix', 'puzzle' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif' })
     ]
@@ -154,7 +164,7 @@ function handle(comment, handler) {
 
     cache.push(comment.permlink)
 
-    sleep.sleep(1)
+    // sleep.sleep(1)
     // Check if we already put a reply on the exact same post
     steem.api.getContentRepliesAsync(comment.author, comment.permlink).then((result) => {
         return result.filter((reply) => reply.author == user).length > 0
@@ -179,7 +189,7 @@ function handle(comment, handler) {
             { "app": "auto-meme-steem-bot/0.1.0" }
         ).then((result) => {
             console.log(result)
-            sleep.sleep(30)
+            sleep.sleep(90)
         }).catch((err) => {
             console.log("Unable to process comment. ", err)
             console.log("Bad comment: ", comment)
