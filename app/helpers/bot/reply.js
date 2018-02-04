@@ -65,7 +65,7 @@ const defaults = {
             meme: 'https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg' }),
         new Handler({ test: [ 'nope' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebWy28k2K6qrzfDEGmei2QL87W748gf4x4LgwPe4oixC/spongebobno.gif' }), 
-        new Handler({ test: [ 'benadryl' ], 
+        new Handler({ test: [ 'benadryl', 'drug', 'narcotic' ], 
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmdtPzkWkVMM4wzyeevi5b4wcHJUrDcurvghfF3eYX9Hvr/benadryl.png' }), 
         new Handler({ test: [ 'monday' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg' }), 
@@ -81,6 +81,8 @@ const defaults = {
             meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
         new Handler({ test: [ 'shock' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
+        new Handler({ test: [ 'omg', 'my goodness', 'no way', "i don't believe" ],
+            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif' }), 
         new Handler({ test: [ 'with fire' ],
             meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),
         new Handler({ test: [ 'happy birthday', "it's my birthday" ],
@@ -189,7 +191,7 @@ function handle(comment, handler) {
             { "app": "auto-meme-steem-bot/0.1.0" }
         ).then((result) => {
             console.log(result)
-            sleep.sleep(90)
+            sleep.sleep(120)
         }).catch((err) => {
             console.log("Unable to process comment. ", err)
             console.log("Bad comment: ", comment)
