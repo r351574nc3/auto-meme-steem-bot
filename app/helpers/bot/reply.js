@@ -95,8 +95,10 @@ const defaults = {
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmTTXAf2n9W3x1nmSNuhx3jTDWDXPnUUfSGjKnTbh4c7Ma/giphy%20(2).gif' }),
         new Handler({ test: [ 'come at me', 'bring it', 'fight with me', 'argue with me' ],
             meme: 'https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif' }),
+/*
         new Handler({ test: [ 'amazing', 'wow', 'awesome', 'incredible' ],
             meme: 'https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif' }),
+*/
         new Handler({ test: [ 'rubix', 'puzzle' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif' })
     ]
