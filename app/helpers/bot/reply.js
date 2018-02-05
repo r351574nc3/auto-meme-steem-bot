@@ -81,7 +81,7 @@ const defaults = {
             meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
         new Handler({ test: [ 'shock' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
-        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'no way', "i don't believe" ],
+        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'no way', "i can't believe" ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif' }), 
         new Handler({ test: [ 'with fire' ],
             meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),

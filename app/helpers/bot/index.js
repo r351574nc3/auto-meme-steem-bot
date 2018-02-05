@@ -9,5 +9,6 @@ module.exports = {
 }
 
 function run() {
-    scheduler.scheduleJob(EVERY_20_SECONDS, require('./reply'))
+    // scheduler.scheduleJob(EVERY_20_SECONDS, require('./reply'))
+    require('./reply')
 }
