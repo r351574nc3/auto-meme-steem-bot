@@ -63,7 +63,7 @@ const defaults = {
     reply_map: [
         new Handler({ test: [ 'hungry', 'parrot' ],
             meme: 'https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg' }),
-        new Handler({ test: [ 'nope' ],
+        new Handler({ test: [ 'nope', 'uh uh' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebWy28k2K6qrzfDEGmei2QL87W748gf4x4LgwPe4oixC/spongebobno.gif' }), 
         new Handler({ test: [ 'benadryl', 'drug', 'narcotic' ], 
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmdtPzkWkVMM4wzyeevi5b4wcHJUrDcurvghfF3eYX9Hvr/benadryl.png' }), 
@@ -91,8 +91,10 @@ const defaults = {
             meme: 'https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png' }),
         new Handler({ test: [ 'rage', 'frustration', 'frustrated', 'anger' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmVuoC9KqWe9Lm2ZhNVBat9yio7VWZMDFgtovdSLcJrX7D/buttonmash.gif'}),
+/*            
         new Handler({ test: [ 'challenge' ], 
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmTTXAf2n9W3x1nmSNuhx3jTDWDXPnUUfSGjKnTbh4c7Ma/giphy%20(2).gif' }),
+*/
         new Handler({ test: [ 'come at me', 'bring it', 'fight with me', 'argue with me' ],
             meme: 'https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif' }),
         new Handler({ test: [ 'nailed it', 'stuck the landing', 'stuck it', 'great success' ],
