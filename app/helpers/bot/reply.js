@@ -71,7 +71,7 @@ const defaults = {
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg' }), 
         new Handler({ test: [ 'sleepy', 'yawn' ],
             meme: 'https://steemitimages.com/DQmTpAqe15wT6vZwGKPJnHR6HNyw2sW2RZa7RvbaZg8cPeM/kittyyawn.gif' }), 
-        new Handler({ test: [ 'oh no', 'ohno' ],
+        new Handler({ test: [ 'oh no', 'ohno', 'nooo' ],
             meme: 'https://steemitimages.com/DQmewZPadmQ5dP8EWC2JLwMkHMMLcdD4tX2NcstUDqCBeGP/ohnoes.gif' }), 
         new Handler({ test: [ 'mindblow', 'mind blow', 'mind-blow' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWKyX1knyGQp546ovy3wduYh4PLm9mu9dPMDTCmrsZheZ/kramermindblown.gif' }), 
@@ -81,7 +81,7 @@ const defaults = {
             meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
         new Handler({ test: [ 'shock' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
-        new Handler({ test: [ 'omg', 'my goodness', 'no way', "i don't believe" ],
+        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'no way', "i don't believe" ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif' }), 
         new Handler({ test: [ 'with fire' ],
             meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),
@@ -95,10 +95,8 @@ const defaults = {
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmTTXAf2n9W3x1nmSNuhx3jTDWDXPnUUfSGjKnTbh4c7Ma/giphy%20(2).gif' }),
         new Handler({ test: [ 'come at me', 'bring it', 'fight with me', 'argue with me' ],
             meme: 'https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif' }),
-/*
-        new Handler({ test: [ 'amazing', 'wow', 'awesome', 'incredible' ],
+        new Handler({ test: [ 'nailed it', 'stuck the landing', 'stuck it', 'great success' ],
             meme: 'https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif' }),
-*/
         new Handler({ test: [ 'rubix', 'puzzle' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif' })
     ]
