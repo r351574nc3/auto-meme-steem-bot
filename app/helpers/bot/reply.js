@@ -81,7 +81,7 @@ const defaults = {
             meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
         new Handler({ test: [ 'shock' ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
-        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'no way', "i can't believe" ],
+        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'unbelievable', "i can't believe" ],
             meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif' }), 
         new Handler({ test: [ 'with fire' ],
             meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),
@@ -168,7 +168,8 @@ function handle(comment, handler) {
 
     cache.push(comment.permlink)
 
-    // sleep.sleep(1)
+    sleep.sleep(300) // Allow content to sit for about 5 minutes before responding to it.
+
     // Check if we already put a reply on the exact same post
     steem.api.getContentRepliesAsync(comment.author, comment.permlink).then((result) => {
         return result.filter((reply) => reply.author == user).length > 0
@@ -193,7 +194,6 @@ function handle(comment, handler) {
             { "app": "auto-meme-steem-bot/0.1.0" }
         ).then((result) => {
             console.log(result)
-            sleep.sleep(120)
         }).catch((err) => {
             console.log("Unable to process comment. ", err)
             console.log("Bad comment: ", comment)
@@ -205,9 +205,12 @@ function handle(comment, handler) {
 
 
 function process(comment) {
-    defaults.reply_map
-        .filter((handler) => handler.test(comment.body.toLowerCase()) > -1 && comment.author != config.user)
-        .forEach((handler) => handle(comment, handler))
+    return Promise.filter(defaults.reply_map,
+                   (handler) => handler.test(comment.body.toLowerCase()) > -1 && comment.author != config.user)
+        .each((handler) => handle(comment, handler))
+        .catch((err) => {
+            console.log("problems processing: ", err)
+        })
 }
 
 function execute() {
@@ -217,7 +220,7 @@ function execute() {
             var operation_name = result[0]
             if (operation_name === 'comment') {
                 var comment = new Comment(result[1])
-                process(comment)
+                var promise = process(comment)
             }   
         }
     })
