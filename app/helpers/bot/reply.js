@@ -13,6 +13,7 @@ module.exports = {
 }
 
 const REPLY_DELAY = 5 // minutes
+var delay = moment()
 
 var cache = []
 
@@ -167,7 +168,8 @@ function handle(comment, handler) {
 
     cache.push(comment.permlink)
 
-    var later = moment().add(REPLY_DELAY, 'minutes').toDate()
+    delay = delay.add(REPLY_DELAY, 'minutes')
+    var later = delay.toDate()
     console.log("Rescheduling reply ", REPLY_DELAY, " minutes to recover")
     schedule.scheduleJob(later, function() {
         var promise = reply(comment, handler)
