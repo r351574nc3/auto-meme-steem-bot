@@ -167,7 +167,7 @@ function handle(comment, handler) {
 
     cache.push(comment.permlink)
 
-    var later = moment().add(REPLY_DELAY).toDate()
+    var later = moment().add(REPLY_DELAY, 'minutes').toDate()
     console.log("Rescheduling reply ", REPLY_DELAY, " minutes to recover")
     schedule.scheduleJob(later, function() {
         var promise = reply(comment, handler)
