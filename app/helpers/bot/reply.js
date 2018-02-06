@@ -170,7 +170,7 @@ function handle(comment, handler) {
 
     delay = delay.add(REPLY_DELAY, 'minutes')
     var later = delay.toDate()
-    console.log("Rescheduling reply ", REPLY_DELAY, " minutes to recover")
+    console.log("Rescheduling reply until ", later)
     schedule.scheduleJob(later, function() {
         var promise = reply(comment, handler)
     })    
