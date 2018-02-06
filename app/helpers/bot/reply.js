@@ -4,6 +4,8 @@ const Promise = require('bluebird')
 const steem = Promise.promisifyAll(require('steem'))
 const config = require('../../config')
 const moment = require('moment')
+const schedule = require('node-schedule')
+
 
 
 module.exports = {
@@ -223,9 +225,12 @@ function execute() {
         var user = config.user
         if (result && result.length > 0) {
             var operation_name = result[0]
-            if (operation_name === 'comment') {
-                var comment = new Comment(result[1])
-                var promise = process(comment)
+            switch(operation_name) {
+                case 'comment':
+                    var comment = new Comment(result[1])
+                    var promise = process(comment)
+                    break;
+                default:
             }   
         }
     })
