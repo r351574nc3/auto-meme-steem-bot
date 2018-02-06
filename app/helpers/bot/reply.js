@@ -156,11 +156,6 @@ class Comment {
 }
 
 function handle(comment, handler) {
-    var permlink = 're-' + comment.author 
-        + '-' + comment.permlink 
-        + '-' + new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
-    var user = config.user
-    var wif = config.wif 
 
     if (in_cache(comment.permlink)) {
         return
@@ -181,6 +176,13 @@ function handle(comment, handler) {
 
 function reply(comment, handler) {
     console.log("Replying to ", {author: comment.author, permlink: comment.permlink})
+
+    var permlink = 're-' + comment.author 
+        + '-' + comment.permlink 
+        + '-' + new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
+    var user = config.user
+    var wif = config.wif 
+
     // Check if we already put a reply on the exact same post
     return steem.api.getContentRepliesAsync(comment.author, comment.permlink).then((result) => {
         return result.filter((reply) => reply.author == user).length > 0
