@@ -10,9 +10,5 @@ module.exports = {
 
 function run() {
     // scheduler.scheduleJob(EVERY_20_SECONDS, require('./reply'))
-    var reply_task = require('./reply')
-    new Promise((resolve, reject) => {
-        var retval = reply_task.execute()
-        
-    })
+    require('./reply').execute()
 }

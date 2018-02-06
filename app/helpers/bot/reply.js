@@ -3,12 +3,14 @@
 const Promise = require('bluebird')
 const steem = Promise.promisifyAll(require('steem'))
 const config = require('../../config')
-const sleep = require('sleep')
+const moment = require('moment')
 
 
 module.exports = {
     execute
 }
+
+const REPLY_DELAY = 5 // minutes
 
 var cache = []
 
@@ -168,10 +170,17 @@ function handle(comment, handler) {
 
     cache.push(comment.permlink)
 
-    sleep.sleep(300) // Allow content to sit for about 5 minutes before responding to it.
+    var later = moment().add(REPLY_DELAY).toDate()
+    console.log("Rescheduling reply ", REPLY_DELAY, " minutes to recover")
+    schedule.scheduleJob(later, function() {
+        var promise = reply(comment, handler)
+    })    
+}
 
+function reply(comment, handler) {
+    console.log("Replying to ", {author: comment.author, permlink: comment.permlink})
     // Check if we already put a reply on the exact same post
-    steem.api.getContentRepliesAsync(comment.author, comment.permlink).then((result) => {
+    return steem.api.getContentRepliesAsync(comment.author, comment.permlink).then((result) => {
         return result.filter((reply) => reply.author == user).length > 0
     }).then((result) => {
         if (result) {
@@ -179,10 +188,6 @@ function handle(comment, handler) {
             return Promise.reject('Duplicate post')
         }
 
-        console.log("parent: ", comment.parent)
-        console.log("author: ", comment.author)
-        console.log("permlink: ", comment.permlink)
-        console.log("newlink: ", permlink)
         steem.broadcast.commentAsync(
             wif,
             comment.author, // Leave parent author empty
