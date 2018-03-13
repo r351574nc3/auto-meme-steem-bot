@@ -5,8 +5,7 @@ const steem = Promise.promisifyAll(require('steem'))
 const config = require('../../config')
 const moment = require('moment')
 const schedule = require('node-schedule')
-
-
+const bot = require('../nlp/talkify');
 
 module.exports = {
     execute
@@ -22,7 +21,16 @@ function in_cache(permlink) {
 }
 
 
-class Handler {
+/*
+ * About Rules
+ * 
+ *
+ */
+
+/** 
+ * Just some generic rules
+ */
+class Rules {
     constructor(handlerdef) {
         this.criteria = handlerdef.test
         this.meme = handlerdef.meme
@@ -63,56 +71,6 @@ class Handler {
         return message
     }
 }
-
-const defaults = {
-    reply_map: [
-        new Handler({ test: [ 'hungry', 'parrot' ],
-            meme: 'https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg' }),
-        new Handler({ test: [ 'nope', 'uh uh' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebWy28k2K6qrzfDEGmei2QL87W748gf4x4LgwPe4oixC/spongebobno.gif' }), 
-        new Handler({ test: [ 'benadryl', 'drug', 'narcotic' ], 
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmdtPzkWkVMM4wzyeevi5b4wcHJUrDcurvghfF3eYX9Hvr/benadryl.png' }), 
-        new Handler({ test: [ 'monday' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg' }), 
-        new Handler({ test: [ 'sleepy', 'yawn' ],
-            meme: 'https://steemitimages.com/DQmTpAqe15wT6vZwGKPJnHR6HNyw2sW2RZa7RvbaZg8cPeM/kittyyawn.gif' }), 
-        new Handler({ test: [ 'oh no', 'ohno', 'nooo' ],
-            meme: 'https://steemitimages.com/DQmewZPadmQ5dP8EWC2JLwMkHMMLcdD4tX2NcstUDqCBeGP/ohnoes.gif' }), 
-        new Handler({ test: [ 'mindblow', 'mind blow', 'mind-blow' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWKyX1knyGQp546ovy3wduYh4PLm9mu9dPMDTCmrsZheZ/kramermindblown.gif' }), 
-        new Handler({ test: [ 'stormtrooper', 'storm trooper' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmaNgiCGS3BcPLLDTABEMZahZitP6yKD3sG1JtYYHEje5q/dancingstormtroopers.gif' }), 
-        new Handler({ test: [ 'avenge', 'toothbrush', 'bathroom', 'wash up', 'wash-up', 'wash hands', 'washroom', 'restroom' ],
-            meme: 'https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif' }), 
-        new Handler({ test: [ 'shock' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif' }), 
-        new Handler({ test: [ 'omg', 'omfg', 'gtfo', 'shut the front door', 'shut the frontdoor', 'my goodness', 'unbelievable', "i can't believe" ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif' }), 
-        new Handler({ test: [ 'with fire' ],
-            meme: 'https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif' }),
-        new Handler({ test: [ 'happy birthday', "it's my birthday" ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmcEJYJP4CuCmSM6JtkfzYDbjm6PajWyGRhsUjsKDRSAfF/giphy%20(1).gif'}),
-        new Handler({ test: [ 'facepalm', 'face palm', 'face-palm'],
-            meme: 'https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png' }),
-        new Handler({ test: [ 'rage', 'frustration', 'frustrated', 'anger' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmVuoC9KqWe9Lm2ZhNVBat9yio7VWZMDFgtovdSLcJrX7D/buttonmash.gif'}),
-/*            
-        new Handler({ test: [ 'challenge' ], 
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmTTXAf2n9W3x1nmSNuhx3jTDWDXPnUUfSGjKnTbh4c7Ma/giphy%20(2).gif' }),
-*/
-        new Handler({ test: [ 'come at me', 'bring it', 'fight with me', 'argue with me' ],
-            meme: 'https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif' }),
-        new Handler({ test: [ 'nailed it', 'stuck the landing', 'stuck it', 'great success' ],
-            meme: 'https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif' }),
-        new Handler({ test: [ 'rubix', 'puzzle' ],
-            meme: 'https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif' })
-    ]
-}
-/*
-        new Handler({ test: [ 'thankyou', "thank you", 'gracias', 'thanks', 'danke' ],
-            meme: 'https://steemitimages.com/DQmPtCFmLkJpNFWBZsZrGqhHiu3ni53hwzMrcq77akGTLaC/welcome.jpg'}),
-
-            */
             
 class Parent {
     constructor(comment_json) {
@@ -204,7 +162,19 @@ function reply(comment, handler) {
             handler.response(comment.body), // Body
             { "app": "auto-meme-steem-bot/0.1.0" }
         ).then((result) => {
-            console.log(result)
+            return steem.broadcast.voteAsync(
+                wif, 
+                user, 
+                comment.author,
+                comment.permlink,
+                config.weight
+            )
+            .then((results) =>  {
+                console.log(results)
+            })
+            .catch((err) => {
+                console.log("Vote failed: ", err)
+            })
         }).catch((err) => {
             console.log("Unable to process comment. ", err)
             console.log("Bad comment: ", comment)
@@ -215,10 +185,14 @@ function reply(comment, handler) {
 }
 
 
+function resolved(err, messages) {
+
+}
+
 function process(comment) {
-    return Promise.filter(defaults.reply_map,
-                   (handler) => handler.test(comment.body.toLowerCase()) > -1 && comment.author != config.user)
-        .each((handler) => handle(comment, handler))
+
+    return Promise.filter()
+        .each((rule) => handle(comment))
         .catch((err) => {
             console.log("problems processing: ", err)
         })

@@ -28,6 +28,8 @@ spec:
               value: "{{ .Values.steem.name }}"
             - name: STEEM_WIF
               value: "{{ .Values.steem.wif }}"
+            - name: VOTE_WEIGHT
+              value: "{{ .Values.steem.weight }}"
           ports:
             - name: http
               containerPort: 3000
