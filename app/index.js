@@ -1,6 +1,5 @@
 const express = require('express')
 const bot = require('./helpers/bot')
-const html = require('jade')
 
 var app = express()
 
