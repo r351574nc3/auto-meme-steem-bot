@@ -14,11 +14,11 @@ module.exports = {
     execute
 }
 
-const REPLY_DELAY = 300000 // minutes
-const POST_DELAY = 1810000 // minutes
+const REPLY_DELAY = 1000 // minutes
+const POST_DELAY = 30000 // minutes
 var delay = moment()
 let counter = 0
-var cache = []
+const reply_queue = [];
 
 function in_cache(permlink) {
     return cache.filter((cachelink) => cachelink == permlink).length > 0
@@ -126,7 +126,7 @@ function reply(comment, message) {
             permlink, // Permlink
             permlink, // Title
             message, // Body
-            { "app": "auto-meme-steem-bot/0.1.0" }
+            { "app": "steemit/0.1" }
         )
         .then((result) => {
             return steem.broadcast.commentOptionsAsync(
@@ -194,7 +194,7 @@ function is_not_resteem(content) {
 }
 
 function is_blog(content) {
-    const nonblog_tags = [ "spanish", "polish", "contest", "contests", "donation", "macrophotography", "naturephotography", "photography", "music", "poetry", "poem", "photocontest", "steemchurch", "dsound", "mondaymixtape", "life", "christianity", "christian-trail", "story", "freewrite", "writing" ]
+    const nonblog_tags = [ "thealliance", "spanish", "polish", "contest", "contests", "donation", "macrophotography", "naturephotography", "photography", "music", "poetry", "poem", "photocontest", "steemchurch", "dsound", "mondaymixtape", "life", "christianity", "christian-trail", "story", "freewrite", "writing" ]
     let metadata = {}
 
     if (content.json_metadata != '') {
@@ -228,11 +228,13 @@ function train(comment, body) {
 ![](https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg)`
         }
 
+        /*
         if (sentence.indexOf("monday") > -1) {
             return `> ${sentence}
 
 ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg)`
         }
+        */
 
         if (sentence.indexOf("come at me") > -1
             || sentence.indexOf("bring it") > -1
@@ -442,7 +444,9 @@ function execute() {
         Promise.all(result).spread((operation_name, operation) => {
             switch(operation_name) {
                 case 'comment':
-                    return Promise.resolve(operation);
+                    if (operation.parent_author != '') {
+                        return Promise.resolve(operation);
+                    }
                     break;
                 default:
                     return Promise.reject(operation)

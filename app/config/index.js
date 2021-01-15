@@ -1,7 +1,7 @@
 config = {
     user: process.env.STEEM_NAME || "YOU NEED TO FILL THIS IN ICEHOLE",
     wif: process.env.STEEM_WIF || "YOU NEED TO FILL THIS IN ICEHOLE",
-    weight: parseInt(process.env.VOTE_WEIGHT) || 400,
+    weight: parseInt(process.env.VOTE_WEIGHT) || 300,
     steemit_url: "https://www.steemit.com",
     blacklist: [
         "banjo",
@@ -16,7 +16,8 @@ config = {
         "photocontests2",
         "photocontests3",
         "photocontests4",
-        "sneaky-ninja"
+        "sneaky-ninja",
+        "lenasveganliving"
     ]
 }
 
