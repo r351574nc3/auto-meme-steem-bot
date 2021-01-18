@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BlockchainMode, Client, PrivateKey } from '@hiveio/dhive';
 import { HiveService } from './hive.service';
 import { SteemService } from './steem.service';
 import { config } from './config';
@@ -7,6 +6,7 @@ import * as Promise from 'bluebird';
 import * as moment from 'moment';
 import * as fs from 'fs';
 import * as bot from 'talkify';
+import * as removeMd from 'remove-markdown'
 
 
 const voting_queue = [];
@@ -220,7 +220,9 @@ export class ReplyService {
     }
 
     processComment(comment) {
-        const body = comment.body.replace(/<(?:.|\n)*?>/gm, '').replace(/http[^\s]+\s/gm, '');
+        const body = removeMd(comment.body)
+            .replace(/<(?:.|\n)*?>/gm, '')
+            .replace(/http[^\s]+\s/gm, '')
         return Promise.filter([ body ], (sentence, index, length) => {
                 return this.is_english(sentence);
             })

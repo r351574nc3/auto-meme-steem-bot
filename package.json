@@ -39,6 +39,7 @@
     "moment": "^2.27.0",
     "node-schedule": "^1.3.0",
     "reflect-metadata": "^0.1.13",
+    "remove-markdown": "^0.3.0",
     "rimraf": "^3.0.2",
     "talkify": "^2.2.0"
   },
