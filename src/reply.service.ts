@@ -144,13 +144,6 @@ export class ReplyService {
         this.hiveService = hiveService;
         this.steemService = steemService;
         this.author = this.load_author()
-
-        setInterval(() => {
-            const to_vote = voting_queue.shift()
-            this.vote(to_vote)
-                .catch((err) => {
-                })
-        }, ONE_SECOND)
     }
 
     api() {
@@ -274,7 +267,7 @@ export class ReplyService {
 
     vote(post) {
         if (!post) {
-            return Promise.reject("Invalid post")
+            return Promise.reject(`Invalid post ${JSON.stringify(post)}`)
         }
 
         return this.list_blacklist()
@@ -299,8 +292,9 @@ export class ReplyService {
                     .catch((err) => {
                         Logger.error("Voting error ", JSON.stringify(err))
                         if (err.payload.indexOf("STEEMIT_MIN_VOTE_INTERVAL_SEC") > -1) {
-                            voting_queue.push(post)
-                        }
+                            setTimeout(() => {
+                                this.vote(post)
+                            }, ONE_SECOND)                        }
                     })
             })
     }
@@ -541,7 +535,7 @@ export class ReplyService {
                         (TWO_MINUTES - (age_in_seconds * 1000)) : 0
                 console.log(`Queueing for ${wait_time} milliseconds`)
                 setTimeout(() => {
-                    voting_queue.push(
+                    this.vote(
                         {
                             author: comment.author,
                             permlink: comment.permlink,
@@ -592,7 +586,7 @@ export class ReplyService {
                     })
             },
             (error) => {
-                Logger.error("Failed ${error}")
+                Logger.error(`Failed ${JSON.stringify(error)}`)
                 this.run()
             })
     }
