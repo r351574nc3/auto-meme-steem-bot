@@ -18,7 +18,8 @@ const config = {
         "photocontests2",
         "photocontests3",
         "photocontests4",
-        "sneaky-ninja"
+        "sneaky-ninja",
+        "SteemAlive"
     ],
 }
 export { config }
