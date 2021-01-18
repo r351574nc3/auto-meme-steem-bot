@@ -175,7 +175,7 @@ export class VoteService {
     }
     
     reply(comment, message) {
-        Logger.log(`Replying to ${{author: comment.author, permlink: comment.permlink}}`)
+        Logger.log(`Replying to ${JSON.stringify({author: comment.author, permlink: comment.permlink})}`)
     
         var permlink = 're-' + comment.author.replace(/[\.]/, '-')
             + '-' + comment.permlink 
