@@ -133,17 +133,43 @@ interface Author {
     weight: string
 }
 
+class ReplyQueue {
+    private reply_queue: any[]
+    constructor() {
+        this.reply_queue = []
+    }
+    length() { return this.reply_queue.length }
+    push(obj) { return this.reply_queue.push(obj) }
+    pop() { return this.reply_queue.pop() }
+    shift() { return this.reply_queue.shift() }
+    unshift(obj) { return this.reply_queue.unshift(obj) }
+    contains(obj) { 
+        return this.reply_queue.filter((reply) => {
+            return obj.comment.author !== reply.comment.author
+                && obj.comment.permlink !== reply.comment.permlink
+        }).length > 0
+    }
+    isAtCapacity() { return this.reply_queue.length >= config.queue_capacity}
+    remove(obj) {
+        const index_pos = this.reply_queue.indexOf(obj)
+        if (index_pos > -1) {
+            return this.reply_queue.splice(index_pos, 1)
+        }
+    }
+}
 @Injectable()
 export class ReplyService {
     private hiveService: HiveService;
     private steemService: SteemService;
     private author:Author
+    private queue: ReplyQueue
 
     constructor(hiveService: HiveService,
             steemService: SteemService) {
         this.hiveService = hiveService;
         this.steemService = steemService;
         this.author = this.load_author()
+        this.queue = new ReplyQueue()
     }
 
     api() {
@@ -194,7 +220,16 @@ export class ReplyService {
     }
 
     is_blog(content) {
-        const nonblog_tags = [ "spanish", "polish", "contest", "contests", "donation", "macrophotography", "naturephotography", "photography", "music", "poetry", "poem", "photocontest", "steemchurch", "dsound", "mondaymixtape", "life", "christianity", "christian-trail", "story", "freewrite", "writing" ]
+        const nonblog_tags = [ 
+            "spanish", "deutsch", "polish", "contest", "contests", "donation", "macrophotography", 
+            "naturephotography", "photography", "music", "poetry", "poem", "photocontest", 
+            "steemchurch", "dsound", "mondaymixtape", "life", "christianity", "christian-trail", "story", "freewrite", "writing",
+        ]
+        /* Maybe ignore these
+                    "zzan",
+            "dlike",
+            "steemhunt",
+        */
         let metadata = {} as ContentMetadata
     
         if (content.json_metadata != '') {
@@ -480,13 +515,73 @@ export class ReplyService {
     
 ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmcEJYJP4CuCmSM6JtkfzYDbjm6PajWyGRhsUjsKDRSAfF/giphy%20(1).gif)`
             }
-    
+
+            if (sentence.indexOf(" wow ") > -1
+                || sentence.indexOf("amaze") > -1
+                || sentence.indexOf("amazing") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/RGgukq5E6HBM2jscGd4Sszpv94XxHH2uqxMY9z21vaqHt4gBsAYe24mgf78A5JP1wnKcfAsfnqGXxAP8CsjsfmP7hUWecay1k7S3Dv8EktAYyoUiYmqDWbrYASaDz1K?format=match&mode=fit)`
+            }
+
+            if (sentence.indexOf("big fruit") > -1
+                || sentence.indexOf("deep root") > -1
+                || sentence.indexOf("big balls") > -1
+                || sentence.indexOf("giant balls") > -1
+                || sentence.indexOf("enormous balls") > -1
+                || sentence.indexOf("testicles") > -1
+                || sentence.indexOf("huge balls") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/HNWT6DgoBc14riaEeLCzGYopkqYBKxpGKqfNWfgr368M9UowcCRyH8gcSixiH5egfwu7T4Rh4LSP9FaMtcuQiCydjgqkwgiRjHvkAmVT1KCarpPVKHmvSRphbp9?format=match&mode=fit)`
+            }   
+
+            if (sentence.indexOf("fixed it") > -1
+                || sentence.indexOf("fix it") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/4i88GgaV8qiFU89taP2MgKXzwntUGAvkoQiKU7VxyD37q9FfkXRmza8i4BGz9rhzfHcytcvqSnc6m8nTz76ZuNbkKqZuiCfeHmQe142nDa3TVZ4g6ycYDUiXs3?format=match&mode=fit)`
+            }   
+
+            if (sentence.indexOf("hodl") > -1
+                || sentence.indexOf("made of money") > -1
+                || sentence.indexOf("dive in") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/qjrE4yyfw5pEPvDbJDzhdNXM7mjt1tbr2kM3X28F6SraZjPqF1NVUJQrWeMo9X58edGHmmnSENFMg1cMgmXZCCLT6MeJSQSPxMoYDuMeNdHimNU2HE3LU6SZ?format=match&mode=fit)`
+            }   
+
+            if (sentence.indexOf("it's fine") > -1
+                || sentence.indexOf("everything is fine") > -1
+                || sentence.indexOf(" is fine") > -1
+                || sentence.indexOf(" that's fine") > -1
+                || sentence.indexOf("nothing is wrong") > -1
+                || sentence.indexOf("everything is ok") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/3W72119s5BjVs3Hye1oHX44R9EcpQD5C9xXzj68nJaq3CeGDyfpobdH2eBwMoRpT5LZeFqP9zBk6BWYL44BvvrnhFiXhR1JryEKJTCsHYFrsnzBhjFcN4m?format=match&mode=fit)`
+            }   
+
+            if (sentence.indexOf("unstoppable") > -1
+                || sentence.indexOf("don't stop") > -1
+                || sentence.indexOf("never stop") > -1
+                || sentence.indexOf("keep going") > -1
+                || sentence.indexOf("won't stop") > -1
+                || sentence.indexOf("will not be stop") > -1
+                || sentence.indexOf("cannot be stop") > -1
+                || sentence.indexOf("can't stop") > -1
+                || sentence.indexOf("cannot stop") > -1) {
+                return `> ${sentence}
+
+![](https://steemitimages.com/p/3W72119s5BjVs3Hye1oHX44R9EcpQD5C9xXzj68nJaq3CeGDyfpobdH2eBwMoRpT5LZeFqP9zBk6BWYL44BvvrnhFiXhR1JryEKJTCsHYFrsnzBhjFcN4m?format=match&mode=fit)`
+        }   
+
             return -1
         })
         .filter((response) => response != -1)
         .each((response) => {
             let timeout = config.reply_delay
-            if (comment.parent_author != '') {
+            if (comment.parent_author == '') {
                 timeout = config.post_delay
             }
         
@@ -526,10 +621,13 @@ export class ReplyService {
                     permlink: permlink, // Permlink
                     title: permlink, // Title
                     body: message, // Body
-                    json_metadata: JSON.stringify({ "app": "auto-meme-steem-bot/0.1.0" })
+                    json_metadata: ""
                 }
             )
             .then((result) => {
+                // We replied successfully, please remove the item from the queue
+                this.queue.remove({comment, message})
+
                 const age_in_seconds = moment().utc().local().diff(moment(comment.created).utc().local(), 'seconds')
                 const wait_time = (TWO_MINUTES - (age_in_seconds * 1000)) > 0 ? 
                         (TWO_MINUTES - (age_in_seconds * 1000)) : 0
@@ -558,6 +656,11 @@ export class ReplyService {
 
     schedule_reply(comment, response, timeout) {
         Logger.log("Rescheduling reply for ", timeout)
+        if (this.queue.contains({ comment, response })
+            || this.queue.isAtCapacity()) {
+            Logger.warn("Reply already in queue or the queue is at capacity. Skipping...")
+            return
+        }
         return setTimeout(() => { 
             this.reply(comment, response)
         }, timeout)

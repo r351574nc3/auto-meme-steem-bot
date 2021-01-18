@@ -2,14 +2,10 @@ const config = {
     steemEnabled: process.env.STEEM_ENABLED || false,
     user: process.env.STEEM_NAME || "YOU NEED TO FILL THIS IN ICEHOLE",
     wif: process.env.STEEM_WIF || "YOU NEED TO FILL THIS IN ICEHOLE",
-<<<<<<< HEAD:app/config/index.js
-    weight: parseInt(process.env.VOTE_WEIGHT) || 300,
-    steemit_url: "https://www.steemit.com",
-=======
     weight: parseInt(process.env.VOTE_WEIGHT) || 400,
     reply_delay: 300000,
-    post_delay: 1810000,
->>>>>>> nestjs:src/config.ts
+    post_delay: 259200000,
+    queue_capacity: 60,
     blacklist: [
         "banjo",
         "buildawhale",
@@ -24,16 +20,20 @@ const config = {
         "photocontests3",
         "photocontests4",
         "sneaky-ninja",
-<<<<<<< HEAD:app/config/index.js
-        "lenasveganliving"
+        "lenasveganliving",
+        "SteemAlive",
+        "wootzu",
+        "ghost-of-galt",
+        "thehockeyfan-at",
+        "aman9675",
+        "hafiz34",
+        "y0gi",
+        "azure-infero",
+        "ecosynthesizer",
+        "imran15",
+        "rasel72",
+        "por500bolos68",
+        "rcestrella24"
     ]
 }
-
-
-module.exports = config
-=======
-        "SteemAlive"
-    ],
-}
 export { config }
->>>>>>> nestjs:src/config.ts

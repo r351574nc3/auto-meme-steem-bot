@@ -11,8 +11,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const replyService = app.select(AppModule).get(ReplyService);
   const voteService = app.select(AppModule).get(VoteService);
-  voteService.run()
-  // replyService.run()
+  // voteService.run()
+  replyService.run()
   Logger.log("Done streaming")
 }
 bootstrap();
