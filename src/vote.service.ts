@@ -20,6 +20,7 @@ const FIFTEEN_MINUTES = 898000
 const THIRTY_MINUTES = 1800000
 const ONE_HOUR = 3600000
 const ONE_WEEK = 604800
+const MAX_VOTE = 10000
 
 const instant_voters = [
 ]
@@ -140,9 +141,15 @@ export class VoteService {
             })
             .filter((voter) => (!post.whitelisted || !voter.skip_whitelist))
             .map((voter) => {
-                const upvote_weight = post.weight ? post.weight : voter.weight
-                Logger.log(`${voter.name} upvoting ${JSON.stringify(post)}, weight: ${upvote_weight}`)
-                return this.api().vote(voter.wif, voter.name, post.author, post.permlink, upvote_weight)
+                if (post.author === config.user) {
+                    post.weight = MAX_VOTE
+                }
+                else if (!post.weight) {
+                    post.weight = voter.weight
+                }
+                post.weight = post.weight ? post.weight : voter.weight
+                Logger.log(`${voter.name} upvoting ${JSON.stringify(post)}, weight: ${post.weight}`)
+                return this.api().vote(voter.wif, voter.name, post.author, post.permlink, post.weight)
                     .then((results) => {
                         Logger.log("Vote results ", JSON.stringify(results))
                         return results;
