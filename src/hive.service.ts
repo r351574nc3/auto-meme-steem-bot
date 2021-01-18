@@ -42,6 +42,10 @@ export class HiveService {
         return this.client.broadcast.comment(comment, key)
     }
 
+    async getComments(query) {
+        return this.client.database.call('get_discussions_by_comments', [query])
+    }
+
     getActiveVotes(author, permlink): any {
         return Promise.resolve(
             this.client.database.call('get_active_votes', [author, permlink])

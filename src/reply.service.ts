@@ -127,15 +127,22 @@ interface ContentMetadata {
     tags: string[]
 }
 
+interface Author {
+    name: string
+    wif: string
+}
+
 @Injectable()
 export class ReplyService {
     private hiveService: HiveService;
     private steemService: SteemService;
+    private author:Author
 
     constructor(hiveService: HiveService,
             steemService: SteemService) {
         this.hiveService = hiveService;
         this.steemService = steemService;
+        this.author = this.load_author()
 
         setInterval(() => {
             const to_vote = voting_queue.shift()
@@ -293,7 +300,16 @@ export class ReplyService {
                         }
                     })
             })
+    }
 
+    load_author(): Author {
+        const buffer = fs.readFileSync(process.env.CONFIG_DIR + "/reply.json").toString();
+        const author = JSON.parse(buffer)
+        const retval = {
+            name: author.name,
+            wif: author.wif
+        } as Author
+        return retval
     }
 
     train(comment, body) {
@@ -308,13 +324,13 @@ export class ReplyService {
                     
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg)`
+![](https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg)`
             }
     
             if (sentence.indexOf("monday") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg)`
             }
     
             if (sentence.indexOf("come at me") > -1
@@ -326,21 +342,21 @@ export class ReplyService {
                 || sentence.indexOf("debate with me") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif)`
+![](https://steemitimages.com/DQmUSaniT7yoGFqM7zCjUSZPvo1dUXZ7txGTXnZbpZFUgKv/comeatmebro.gif)`
             }
     
             // console.log("Checking for ", sentence)
             if (sentence.indexOf("shock") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmSRdJf6PfTRu7r3oqyywzgpVcxzMwY4dPQgaWh17qUjCg/mildshock.gif)`
             }
     
             if (sentence.indexOf("puzzle") > -1
                 || sentence.indexOf("rubix") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmWb1B3Tiu9ZVQgMGNFPvy1wh26chCr5bhUAFRKsAF7ixG/easy.gif)`
             }
     
             if (sentence.indexOf("facepalm") > -1
@@ -348,7 +364,7 @@ export class ReplyService {
                 || sentence.indexOf("face-palm") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png)`
+![](https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png)`
             }
     
             if (sentence.indexOf("ohno") > -1
@@ -356,7 +372,7 @@ export class ReplyService {
                 || sentence.indexOf("noooo") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmewZPadmQ5dP8EWC2JLwMkHMMLcdD4tX2NcstUDqCBeGP/ohnoes.gif)`
+![](https://steemitimages.com/DQmewZPadmQ5dP8EWC2JLwMkHMMLcdD4tX2NcstUDqCBeGP/ohnoes.gif)`
             }
     
             if (sentence.indexOf("with-fire") > -1
@@ -364,7 +380,7 @@ export class ReplyService {
                 || sentence.indexOf("withfire") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif)`
+![](https://steemitimages.com/DQmVRGZ6dAytVhcr4pTRdFnSnxj2J3tnhJJhrFFPTfWVYon/burningman.gif)`
             }
             
     
@@ -372,7 +388,7 @@ export class ReplyService {
                 || sentence.indexOf("yawn") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmTpAqe15wT6vZwGKPJnHR6HNyw2sW2RZa7RvbaZg8cPeM/kittyyawn.gif)`
+![](https://steemitimages.com/DQmTpAqe15wT6vZwGKPJnHR6HNyw2sW2RZa7RvbaZg8cPeM/kittyyawn.gif)`
             }
             
             
@@ -384,7 +400,7 @@ export class ReplyService {
                 || sentence.indexOf("dark side") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png)`
+![](https://steemitimages.com/DQmcEN577GiBqehZ7aa5woXL7vj72f7ZcM3iiwWbh7RVhUR/image.png)`
             }
     
             if (sentence.indexOf("nailed it") > -1
@@ -393,7 +409,7 @@ export class ReplyService {
                 || sentence.indexOf("great success") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif)`
+![](https://steemitimages.com/DQmPMiZBzePcFiirBCQoDP1PzELK2K9etJSU7RTMvhQNvtW/huge.gif)`
             }
             
             if (sentence.indexOf("nope") > -1
@@ -410,7 +426,7 @@ export class ReplyService {
                 || sentence.indexOf("never never") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmebWy28k2K6qrzfDEGmei2QL87W748gf4x4LgwPe4oixC/spongebobno.gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmebWy28k2K6qrzfDEGmei2QL87W748gf4x4LgwPe4oixC/spongebobno.gif)`
             }
     
             if (sentence.indexOf("omg") > -1
@@ -419,7 +435,7 @@ export class ReplyService {
                 || sentence.indexOf("shut the f") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmbRfuLUQvqJpVezXMtdPqDBasxoXCcffTNcMG3KfWYdTv/kittyshocked.gif)`
             }
             
             if (sentence.indexOf(" rage") > -1
@@ -427,7 +443,7 @@ export class ReplyService {
                 || sentence.indexOf(" anger") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmVuoC9KqWe9Lm2ZhNVBat9yio7VWZMDFgtovdSLcJrX7D/buttonmash.gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmVuoC9KqWe9Lm2ZhNVBat9yio7VWZMDFgtovdSLcJrX7D/buttonmash.gif)`
             }
     
             if (sentence.indexOf("benadryl") > -1
@@ -436,7 +452,7 @@ export class ReplyService {
                 || sentence.indexOf("pills") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmdtPzkWkVMM4wzyeevi5b4wcHJUrDcurvghfF3eYX9Hvr/benadryl.png)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmdtPzkWkVMM4wzyeevi5b4wcHJUrDcurvghfF3eYX9Hvr/benadryl.png)`
             }
     
             if (sentence.indexOf("avenge") > -1
@@ -449,7 +465,7 @@ export class ReplyService {
                 || sentence.indexOf("washroom") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif)`
+![](https://steemitimages.com/DQme5t81e8aYmUfHF4CxaNq7XAw7AUmr9CCYePQUhWRiUTK/avengers.gif)`
             }
                     
             if (sentence.indexOf("happy birthday") > -1
@@ -464,7 +480,7 @@ export class ReplyService {
                 || sentence.indexOf("belated birthday") > -1) {
                 return `> ${sentence}
     
-    ![](https://steemitimages.com/0x0/https://steemitimages.com/DQmcEJYJP4CuCmSM6JtkfzYDbjm6PajWyGRhsUjsKDRSAfF/giphy%20(1).gif)`
+![](https://steemitimages.com/0x0/https://steemitimages.com/DQmcEJYJP4CuCmSM6JtkfzYDbjm6PajWyGRhsUjsKDRSAfF/giphy%20(1).gif)`
             }
     
             return -1
@@ -496,25 +512,26 @@ export class ReplyService {
                 return Promise.reject('Duplicate post')
             }
     
-            Logger.log(`comment ${[config.wif,
+            Logger.log(`comment ${[this.author.wif,
                 comment.author, // Leave parent author empty
                 comment.permlink,
-                config.user, // Author
+                this.author.name, // Author
                 permlink, // Permlink
                 permlink, // Title
                 message]}`)
             this.api().comment(
-                config.wif,
+                this.author.wif,
                 {
                     parent_author: comment.author, // Leave parent author empty
                     parent_permlink: comment.permlink,
-                    author: config.user, // Author
+                    author: this.author.name, // Author
                     permlink: permlink, // Permlink
                     title: permlink, // Title
                     body: message, // Body
                     json_metadata: JSON.stringify({ "app": "auto-meme-steem-bot/0.1.0" })
                 }
             )
+            /*
             .then((result) => {
                 return this.api().vote(
                     config.wif, 
@@ -536,7 +553,7 @@ export class ReplyService {
                 else {
                     Logger.error("Unable to process comment. ", err)
                 }
-            })
+            })*/
         }).catch((err) => {
             Logger.error("Skipping ", permlink, err)
         })
@@ -550,6 +567,9 @@ export class ReplyService {
     }
 
     run() {
+        const permlink =  Math.random()
+        .toString(36).substring(7)
+
         Logger.log("Streaming started")
         const retval = this.api().streamOperations(
             (results) => {

@@ -4,6 +4,7 @@ import { HiveService } from './hive.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ReplyService } from './reply.service';
+import { VoteService } from './vote.service';
 import { SteemModule } from './steem.module';
 import { SteemService } from './steem.service';
 
@@ -13,6 +14,7 @@ import { SteemService } from './steem.service';
   providers: [
     AppService, 
     ReplyService, 
+    VoteService, 
     HiveService,
     SteemService,
   ],
