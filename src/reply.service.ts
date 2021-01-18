@@ -130,6 +130,7 @@ interface ContentMetadata {
 interface Author {
     name: string
     wif: string
+    weight: string
 }
 
 @Injectable()
@@ -309,7 +310,8 @@ export class ReplyService {
         const author = JSON.parse(buffer)
         const retval = {
             name: author.name,
-            wif: author.wif
+            wif: author.wif,
+            weight: author.weight
         } as Author
         return retval
     }
@@ -499,7 +501,7 @@ export class ReplyService {
     }
     
     reply(comment, message) {
-        Logger.log(`Replying to ${{author: comment.author, permlink: comment.permlink}}`)
+        Logger.log(`Replying to ${JSON.stringify({author: comment.author, permlink: comment.permlink})}`)
     
         var permlink = 're-' + comment.author.replace(/[\.]/, '-')
             + '-' + comment.permlink 
@@ -533,21 +535,20 @@ export class ReplyService {
                     json_metadata: JSON.stringify({ "app": "auto-meme-steem-bot/0.1.0" })
                 }
             )
-            /*
             .then((result) => {
-                return this.api().vote(
-                    config.wif, 
-                    config.user, 
-                    comment.author,
-                    comment.permlink,
-                    config.weight
-                )
-                .then((results) =>  {
-                    Logger.log(results)
-                })
-                .catch((err) => {
-                    Logger.error("Vote failed: ", err)
-                })
+                const age_in_seconds = moment().utc().local().diff(moment(comment.created).utc().local(), 'seconds')
+                const wait_time = (TWO_MINUTES - (age_in_seconds * 1000)) > 0 ? 
+                        (TWO_MINUTES - (age_in_seconds * 1000)) : 0
+                console.log(`Queueing for ${wait_time} milliseconds`)
+                setTimeout(() => {
+                    voting_queue.push(
+                        {
+                            author: comment.author,
+                            permlink: comment.permlink,
+                            weight: this.author.weight,
+                        }
+                    )
+                }, wait_time)
             }).catch((err) => {
                 if (err.message.indexOf("STEEMIT_MIN_REPLY_INTERVAL") > -1) {
                     return this.schedule_reply(comment, message, config.reply_delay)
@@ -555,7 +556,7 @@ export class ReplyService {
                 else {
                     Logger.error("Unable to process comment. ", err)
                 }
-            })*/
+            })
         }).catch((err) => {
             Logger.error("Skipping ", permlink, err)
         })
