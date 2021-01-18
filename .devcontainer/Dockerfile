@@ -14,3 +14,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 
 # [Optional] Uncomment if you want to install more global node packages
 # RUN su node -c "npm install -g <your-package-list -here>"
+<<<<<<< HEAD
+=======
+RUN npm update -g npm \
+    && npm install -g npm@7.4.1 @nestjs/cli
+>>>>>>> nestjs
