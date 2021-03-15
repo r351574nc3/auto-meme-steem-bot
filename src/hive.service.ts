@@ -20,10 +20,21 @@ export class HiveService {
         return Promise.resolve(this.client.database.call('get_content', [author, permlink]));
     }
 
-    getContentReplies(author: string, permlink: string): any {
-        return Promise.resolve(this.client.database.call('get_content', [author, permlink]));
+    async getContentReplies(author: string, permlink: string): Promise<any> {
+        return this.client.database.call('get_content', [author, permlink]);
     }
 
+    getParentOf(author: string, permlink: string): any {
+        
+    }
+    async hasSiblingsIn(author: string, permlink: string): Promise {
+
+    }
+
+    async getAccounts(): Promise {
+        return new Promise()
+    }
+    
     vote(posting_key, voter, author, permlink, weight): any {
         const key = PrivateKey.from(posting_key)
         return Promise.resolve(this.client.broadcast.vote(

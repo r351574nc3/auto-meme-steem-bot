@@ -9,7 +9,12 @@
 			"VARIANT": "14"
 		}
 	},
-
+	"workspaceMount": "source=/Users/leo/src/github.com/r351574nc3/,target=/src/github.com/r351574nc3,type=bind,consistency=cached",
+	"workspaceFolder": "/src/github.com/r351574nc3",
+	"mounts": [
+		"source=/Users/leo/Steem,target=/Steem,type=bind,consistency=cached",
+		"source=/Users/leo/Hive,target=/Hive,type=bind,consistency=cached"
+	],
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/zsh"

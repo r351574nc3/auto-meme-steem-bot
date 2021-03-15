@@ -3,7 +3,9 @@ const config = {
     user: process.env.STEEM_NAME || "YOU NEED TO FILL THIS IN ICEHOLE",
     wif: process.env.STEEM_WIF || "YOU NEED TO FILL THIS IN ICEHOLE",
     weight: parseInt(process.env.VOTE_WEIGHT) || 400,
+    threshold: 20,
     reply_delay: 300000,
+    spam_delay: 604800000,
     post_delay: 259200000,
     queue_capacity: 60,
     blacklist: [
@@ -33,7 +35,9 @@ const config = {
         "imran15",
         "rasel72",
         "por500bolos68",
-        "rcestrella24"
+        "rcestrella24",
+        "ngoenyi",
+        "harryji"
     ]
 }
 export { config }

@@ -268,7 +268,7 @@ export class ReplyService {
                 }
             })
             .catch((err) => {
-                console.log("problems processing: ", err)
+                Logger.log(`problems processing: ${JSON.stringify(err)}`)
             })
     }
 
@@ -597,15 +597,13 @@ export class ReplyService {
             + '-' + new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
     
         // Check if we already put a reply on the exact same post
-        return this.api().getContentReplies(comment.author, comment.permlink).then((result) => {
-            return result.filter((reply) => reply.author == config.user).length > 0
-        }).then((result) => {
+        return this.api().hasSiblingsIn(comment, this.author.name).then((result) => {
             if (result) {
-                Logger.log("Rejecting post ")
+                Logger.log(`Rejecting post ${comment.author}/${comment.permlink} as duplicate`)
                 return Promise.reject('Duplicate post')
             }
     
-            Logger.log(`comment ${[this.author.wif,
+            Logger.log(`comment ${[
                 comment.author, // Leave parent author empty
                 comment.permlink,
                 this.author.name, // Author
@@ -631,7 +629,7 @@ export class ReplyService {
                 const age_in_seconds = moment().utc().local().diff(moment(comment.created).utc().local(), 'seconds')
                 const wait_time = (TWO_MINUTES - (age_in_seconds * 1000)) > 0 ? 
                         (TWO_MINUTES - (age_in_seconds * 1000)) : 0
-                console.log(`Queueing for ${wait_time} milliseconds`)
+                Logger.log(`Queueing for ${wait_time} milliseconds`)
                 setTimeout(() => {
                     this.vote(
                         {
@@ -667,8 +665,12 @@ export class ReplyService {
     }
 
     run() {
-        const permlink =  Math.random()
-        .toString(36).substring(7)
+        /*
+        (async () =>  {
+            const answer = this.reply({author: 'don-t', permlink: 're-stefanomassari-qo97qp'}, "Howdy")
+        })()
+        const permlink =  Math.random().toString(36).substring(7)
+        */
 
         Logger.log("Streaming started")
         const retval = this.api().streamOperations(
@@ -676,10 +678,12 @@ export class ReplyService {
                 return Promise.resolve(results.op).spread((operation_name, operation) => {
                     switch (operation_name) {
                         case 'comment':
-                            return this.processComment(operation)
-                                .catch((err) => {
-                                    Logger.error("Unable to process comment because ", err)
-                                })
+                            if (operation.parent_author !== '') {
+                                return this.processComment(operation)
+                                    .catch((err) => {
+                                        Logger.error("Unable to process comment because ", err)
+                                    })
+                            }
                         default:
                             break;
                     }
