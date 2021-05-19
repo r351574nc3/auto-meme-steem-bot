@@ -30,6 +30,9 @@ const ONE_HOUR = 3600000
 const SIX_HOUR = ONE_HOUR * 6
 const ONE_DAY = 86400
 const ONE_WEEK = ONE_DAY * 7
+const ONE_MONTH = ONE_DAY * 30
+const SIX_MONTH = ONE_MONTH * 6
+const ONE_YEAR = ONE_MONTH * 12
 const MAX_VOTE = 10000
 
 const follow = [
@@ -274,27 +277,34 @@ export class SpamService {
     }
 
     processComment(comment) {
-        Logger.log(`Processing comment ${JSON.stringify(comment)}`)
         const body = removeMd(comment.body)
             .replace(/<(?:.|\n)*?>/gm, '')
             .replace(/http[^\s]+\s/gm, '')
+        //    .filter((sentence) => sentence.indexOf("WWW.QOO10.COM") > -1 || sentence === "<")
+        /*
+                    .then((sentences) => {
+                return this.is_content_allowed(comment)
+            })
+            */
         return Promise.filter([ body ], (sentence, index, length) => {
                 return comment.author != config.user
             })
             .map((sentence) => {
                 return sentence.toLowerCase();
             })
-            .filter((sentence) => sentence.indexOf("WWW.QOO10.COM") > -1 || sentence === "<")
-            .filter((sentence) => (!this.is_author_blacklisted(comment)))
-            .filter((sentence) => this.is_content_allowed(comment))
-            .then((sentences) => {
-                // return handle(sentences.pop(), comment)
-                if (sentences.length > 0 && comment.author === 'upvu') {
-                    return this.train(comment, sentences[0])
+            .then((sentence) => {
+                return !this.is_author_blacklisted(comment)
+            })
+            .then((allowed) => {
+                return allowed && this.spammers().filter((spammer) => comment.author === spammer.name).length > 0
+            })
+            .then((allowed) => {    
+                if (allowed) {
+                        return this.train(comment, body.toLowerCase())
                 }
             })
             .catch((err) => {
-                Logger.log(`problems processing: ${JSON.stringify(err)}`)
+                Logger.error(`problems processing: ${JSON.stringify(err)}`, err)
             })
     }
 
@@ -348,7 +358,8 @@ export class SpamService {
             "https://steemitimages.com/p/6VvuHGsoU2QBt9MXeXNdDuyd4Bmd63j7zJymDTWgdcJjnzh9AfGXFkDKZrGwfydcTa917nZ7mdeo9VjjC5q4kKAu9K8T5AUPCuy3BuLpdpKKCRW61R4wTywM8wMLuK?format=match&mode=fit",
             "https://steemitimages.com/p/HNWT6DgoBc14riaEeLCzGYopkqYBKxpGKqfNWfgr368M9UowcCRyH8gcSixiH5egfwu7T4Rh4LSP9FaMtcuQiCydjgqkwgiRjHvkAmVT1KCarpPVKHmvSRphbp9?format=match&mode=fit",
             "https://steemitimages.com/p/HNWT6DgoBc14riaEeLCzGYopkqYBKxpGKqfNWfgr368M9WNB5UUjnhBYCrDGBgKwRioSC82rB73WWS9VSTToXpy38ApyR2QH9tJ4cTThJVXdYLWx7A456z7bFDf?format=match&mode=fit",
-            "https://steemitimages.com/p/RGgukq5E6HBM2jscGd4Sszpv94XxHH2uqxMY9z21vaqHt2vKXDMuuN1PzGccCesV8nYforsXigN16gjxEyZkjaLwvw1Z9AfFW75DqJzRXidjHZYdgS67aE2ZqTc36uk?format=match&mode=fit&width=640"
+            "https://steemitimages.com/p/RGgukq5E6HBM2jscGd4Sszpv94XxHH2uqxMY9z21vaqHt2vKXDMuuN1PzGccCesV8nYforsXigN16gjxEyZkjaLwvw1Z9AfFW75DqJzRXidjHZYdgS67aE2ZqTc36uk?format=match&mode=fit&width=640",
+            "https://steemitimages.com/p/vM1pGHgNcyCXUWJECrZbvn1NMPj1oFGUo3gYfF3NNPRD9VY7im7aGaAyRuUHqSPypccdZueViJPq1FCYDMAyhwuMguMpWy3y8hyMeqptXMZwLexgoQXKu3xJPQpBo5X2xwXK614?format=match&mode=fit&width=640"
         ]
 
         const random_meme = memes[Math.floor(Math.random() * Math.floor(memes.length))]
@@ -424,17 +435,24 @@ export class SpamService {
             Logger.warn("Reply already in queue or the queue is at capacity. Skipping...")
             return
         }
-        const now = new Date()
-        Logger.log(`Current timeout is ${timeout}`)
-        if (moment().add(timeout, 'ms').isBefore(this.last_reply_time)) {
-            timeout = moment(this.last_reply_time).add(3, 'm').diff(moment())
-            Logger.log(`Setting timeout to ${timeout}`)
-        }
-        this.last_reply_time = moment().add(timeout, 'ms').toDate()
-        Logger.log(`Scheduling reply for ${timeout}`)
-        return setTimeout(() => { 
-            this.reply(comment, response)
-        }, timeout)
+
+        return this.api().hasSiblingsIn(comment, this.author.name)
+            .then((hasSiblings) => {
+                if (hasSiblings) {
+                    Logger.log(`Rejecting post ${comment.author}/${comment.permlink} as duplicate`)
+                    return Promise.reject('Duplicate post')
+                }
+                const now = new Date()
+                if (moment().add(timeout, 'ms').isBefore(this.last_reply_time)) {
+                    timeout = moment(this.last_reply_time).add(3, 'm').diff(moment())
+                    Logger.log(`Setting timeout to ${timeout}`)
+                }
+                this.last_reply_time = moment().add(timeout, 'ms').toDate()
+                Logger.log(`Scheduling reply for ${timeout}`)
+                return setTimeout(() => { 
+                    this.reply(comment, response)
+                }, timeout)
+            })
     }
 
     comments(author) {
@@ -456,7 +474,7 @@ export class SpamService {
                         }
                     )) {
                         permlink = comment.permlink
-                        if (spamService.isWeekOld(comment)) {
+                        if (spamService.isYearOld(comment)) {
                             yield comment
                         }
                     }
@@ -493,6 +511,16 @@ export class SpamService {
     isWeekOld(content:any):boolean {
         const age_in_seconds = moment().utc().local().diff(moment(content.created).utc().local(), 'seconds')
         return ONE_WEEK <= age_in_seconds
+    }
+
+    is6MonthsOld(content:any):boolean {
+        const age_in_seconds = moment().utc().local().diff(moment(content.created).utc().local(), 'seconds')
+        return SIX_MONTH <= age_in_seconds
+    }
+
+    isYearOld(content: any): boolean {
+        const age_in_seconds = moment().utc().local().diff(moment(content.created).utc().local(), 'seconds')
+        return ONE_YEAR <= age_in_seconds
     }
 
     spammers() {

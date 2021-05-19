@@ -47,7 +47,6 @@ export class SteemService {
 
         // Get all replies
         for await (let reply of this.replies(parent.author, parent.permlink)) {
-            Logger.log(`Comparing ${reply.author} to ${author}`)
             if (reply.author === author) {
                 return true
             }
