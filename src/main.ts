@@ -11,7 +11,7 @@ async function bootstrap() {
   const spamService = app.select(AppModule).get(SpamService);
   // voteService.run()
   // spamService.batch()
-  // spamService.run()
+  spamService.run()
   Logger.log("Done streaming")
 }
 bootstrap();

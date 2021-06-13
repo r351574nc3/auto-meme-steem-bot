@@ -566,7 +566,7 @@ export class SpamService {
                             }
                         */
                         case 'vote':
-                            Logger.log("Got vote: ${Logger.log(JSON.stringify(operation))}")
+                            Logger.log(`Got vote: ${JSON.stringify(operation)}`)
                         default:
                             break;
                     }
