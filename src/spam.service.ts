@@ -300,7 +300,7 @@ export class SpamService {
             })
             .then((allowed) => {    
                 if (allowed) {
-                        return this.train(comment, body.toLowerCase())
+                        return this.spam(comment, body.toLowerCase())
                 }
             })
             .catch((err) => {
@@ -329,7 +329,7 @@ export class SpamService {
         return retval
     }
 
-    async train(comment, body) {
+    async spam(comment, body) {
         const memes = [
             "https://steemitimages.com/DQmSdifbPzahC2RFFmpd7MY9MqrzUy34rjKhzkS522fTHDA/soon.jpg",
             "https://steemitimages.com/0x0/https://steemitimages.com/DQmebMtRTpNPbdNLeYqqtrsCMxwVeGYs58ANS41YZ1dXVJg/mondays.jpeg",
@@ -546,12 +546,17 @@ export class SpamService {
         }
     }
 
+    async processBullying() {
+        
+    }
+
     run() {
         Logger.log("Streaming started")
         const retval = this.api().streamOperations(
             (results) => {
                 return Promise.resolve(results.op).spread((operation_name, operation) => {
                     switch (operation_name) {
+                        /*
                         case 'comment':
                             if (operation.parent_author !== '') {
                                 return this.processComment(operation)
@@ -559,6 +564,9 @@ export class SpamService {
                                         Logger.error("Unable to process comment because ", err)
                                     })
                             }
+                        */
+                        case 'vote':
+                            Logger.log("Got vote: ${Logger.log(JSON.stringify(operation))}")
                         default:
                             break;
                     }
