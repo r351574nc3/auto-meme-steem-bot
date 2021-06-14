@@ -547,6 +547,7 @@ export class SpamService {
     }
 
     async processBullying(operation:any) {
+        Logger.log(`Processing bullying for ${JSON.stringify(operation)}`)
         const comment = await this.api().getContent(operation.author, operation.permlink)
         const parent = await this.api().getContent(comment.parent_author, comment.parent_permlink)
         this.schedule_reply(parent, comment.body, THREE_MINUTES)
