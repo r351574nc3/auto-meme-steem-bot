@@ -27,8 +27,39 @@ export class HiveService {
     getParentOf(author: string, permlink: string): any {
         
     }
+
+    replies(author: string, permlink: string): Promise {
+        const service = this
+        return {
+            async *[Symbol.asyncIterator]() {
+                const posts = [{ author, permlink }]
+                while (posts.length > 0) {
+                    const post = posts.pop()
+                    const post_replies = await service.getContentReplies(post.author, post.permlink)
+                    for (let reply of post_replies) {
+                        posts.push(reply)
+                        yield reply
+                    }
+                }
+            }
+        }
+    }
+
     async hasSiblingsIn(author: string, permlink: string): Promise {
 
+    }
+
+    async alreadyPosted(post: any, author: string): Promise {
+        const parent = await this.getParentOf(post.author, post.permlink);
+
+        // Get all replies
+        for await (let reply of this.replies(parent.author, parent.permlink)) {
+            if (reply.author === author &&
+                reply.body.indexOf(post.body)) {
+                return true
+            }
+        }
+        return false
     }
 
     async getAccounts(): Promise {

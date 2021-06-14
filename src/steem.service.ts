@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BlockchainMode, Client, PrivateKey } from 'dsteem';
+import { BlockchainMode, Client, PrivateKey, DeleteCommentOperation, Operation } from 'dsteem';
 import * as Promise from 'bluebird';
 
 @Injectable()
@@ -25,8 +25,10 @@ export class SteemService {
         return post
     }
     
-    async deleteComment(post: any): Promise {
-        return await this.client.database.call('delete_comment', [ post.author, post.permlink ])
+    async deleteComment(posting_key: string, post: any): Promise {
+        const key = PrivateKey.from(posting_key)
+        const op: Operation = ['delete_comment', { author: post.author, permlink: post.permlink }]
+        return this.client.broadcast.sendOperations([op], key)
     }
 
     replies(author: string, permlink: string): Promise {
@@ -52,6 +54,19 @@ export class SteemService {
         // Get all replies
         for await (let reply of this.replies(parent.author, parent.permlink)) {
             if (reply.author === author) {
+                return true
+            }
+        }
+        return false
+    }
+
+    async alreadyPosted(post: any, author: string): Promise {
+        const parent = await this.getParentOf(post.author, post.permlink);
+
+        // Get all replies
+        for await (let reply of this.replies(parent.author, parent.permlink)) {
+            if (reply.author === author &&
+                reply.body.indexOf(post.body) > -1) {
                 return true
             }
         }

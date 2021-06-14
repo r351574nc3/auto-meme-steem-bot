@@ -5,7 +5,9 @@ const config = {
     weight: parseInt(process.env.VOTE_WEIGHT) || 400,
     threshold: 20,
     reply_delay: 300000,
-    spam_delay: 604800000,
+    // spam_delay: 604800000,
+    // post_delay: 259200000,
+    spam_delay: 5000,
     post_delay: 259200000,
     queue_capacity: 60,
     blacklist: [

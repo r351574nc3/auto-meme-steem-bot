@@ -369,6 +369,7 @@ export class SpamService {
             const age = moment().utc().local().diff(moment(comment.created).utc().local())
             Logger.log(`Comment age: ${age} milliseconds`)
             let timeout = age < config.spam_delay ? config.spam_delay - age : 0
+            timeout = 1000
             if (comment.parent_author == '') {
                 timeout = config.post_delay
             }
@@ -388,19 +389,13 @@ export class SpamService {
             + '-' + new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
     
         // Check if we already put a reply on the exact same post
-        return this.api().hasSiblingsIn(comment, this.author.name).then((result) => {
-            if (result) {
-                Logger.log(`Rejecting post ${comment.author}/${comment.permlink} as duplicate`)
-                return Promise.reject('Duplicate post')
-            }
-    
-            Logger.log(`comment ${[
-                comment.author, // Leave parent author empty
-                comment.permlink,
-                this.author.name, // Author
-                permlink, // Permlink
-                permlink, // Title
-                message]}`)
+        return this.api().alreadyPosted(comment, this.author.name)
+            .then((alreadyPosted) => {
+                if (alreadyPosted) {
+                    Logger.log(`Rejecting post ${comment.author}/${comment.permlink} as duplicate`)
+                    return Promise.reject('Duplicate post')
+                }
+           
             this.api().comment(
                 this.author.wif,
                 {
@@ -436,18 +431,20 @@ export class SpamService {
             return
         }
 
-        return this.api().hasSiblingsIn(comment, this.author.name)
-            .then((hasSiblings) => {
-                if (hasSiblings) {
+        return this.api().alreadyPosted(comment, this.author.name)
+            .then((alreadyPosted) => {
+                if (alreadyPosted) {
                     Logger.log(`Rejecting post ${comment.author}/${comment.permlink} as duplicate`)
                     return Promise.reject('Duplicate post')
                 }
+                /*
                 const now = new Date()
                 if (moment().add(timeout, 'ms').isBefore(this.last_reply_time)) {
                     timeout = moment(this.last_reply_time).add(3, 'm').diff(moment())
                     Logger.log(`Setting timeout to ${timeout}`)
                 }
                 this.last_reply_time = moment().add(timeout, 'ms').toDate()
+                */
                 Logger.log(`Scheduling reply for ${timeout}`)
                 return setTimeout(() => { 
                     this.reply(comment, response)
@@ -550,8 +547,8 @@ export class SpamService {
         Logger.log(`Processing bullying for ${JSON.stringify(operation)}`)
         const comment = await this.api().getContent(operation.author, operation.permlink)
         const parent = await this.api().getContent(comment.parent_author, comment.parent_permlink)
-        this.schedule_reply(parent, comment.body, THREE_MINUTES)
-        this.api().deleteComment(comment)
+        this.api().deleteComment(this.author.wif, comment)
+        this.schedule_reply(parent, comment.body, FIVE_SECONDS)
     }
 
     run() {
@@ -589,3 +586,21 @@ export class SpamService {
             })
     }
 }
+
+/*
+Actually, you are misled. You are delegating SP to @endingplagiarism. @endingplagiarism does **NOT** disable rewards on posts. Normally, when you downvote an account, rewards return to the pool so everyone on steemit can benefit and we're able to combat SPAM and plagiarism. However, this account after downvoting  goes and self-votes.
+
+**Here's why that's bad**
+Rewards that would have gone to the reward pool now instead go to @endingplagiarism. Instead, of battling SPAM now, what happens is we just redirect all the profit lost to SPAMMERS to @endingplagiarsm. Further, it doesn't get rid of SPAM or plagiarism. Rather, it proliferates it. Look at this:
+
+
+![image.png](https://cdn.steemitimages.com/DQmUpXeRjbhncMNCpQdfTwvJpnGy8C5Q1DiCTzXg5GLGxKB/image.png)
+
+Numerous transactions end up being spent on the steemit blockchain that are basically just spam.
+
+
+![image.png](https://cdn.steemitimages.com/DQmZB7E6rL3MYA1o6L8Geo4aqUgtVVNXK3xmn1jCrdWr3oB/image.png)
+
+
+Tell me how that is **NOT** vote farming?
+ */
