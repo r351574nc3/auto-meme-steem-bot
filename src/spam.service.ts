@@ -300,7 +300,7 @@ export class SpamService {
             })
             .then((allowed) => {    
                 if (allowed) {
-                        return this.spam(comment, body.toLowerCase())
+                    return this.spam(comment, body.toLowerCase())
                 }
             })
             .catch((err) => {
@@ -546,8 +546,11 @@ export class SpamService {
         }
     }
 
-    async processBullying() {
-        
+    async processBullying(operation:any) {
+        const comment = await this.api().getContent(operation.author, operation.permlink)
+        const parent = await this.api().getContent(comment.parent_author, comment.parent_permlink)
+        this.schedule_reply(parent, comment.body, THREE_MINUTES)
+        this.api().deleteComment(comment)
     }
 
     run() {
@@ -566,7 +569,11 @@ export class SpamService {
                             }
                         */
                         case 'vote':
-                            Logger.log(`Got vote: ${JSON.stringify(operation)}`)
+                            if (operation.voter == 'justyy' 
+                                && operation.weight < 0
+                                && ['r351574nc3', 'perpetuator', 'exifr', 'exifr0', 'salty-mcgriddles'].includes(operation.author)) {
+                                return this.processBullying(operation)
+                            }
                         default:
                             break;
                     }

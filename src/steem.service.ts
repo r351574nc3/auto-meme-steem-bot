@@ -24,6 +24,10 @@ export class SteemService {
         }
         return post
     }
+    
+    async deleteComment(post: any): Promise {
+        return await this.client.database.call('delete_comment', [ post.author, post.permlink ])
+    }
 
     replies(author: string, permlink: string): Promise {
         const service = this

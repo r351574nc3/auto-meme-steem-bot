@@ -53,6 +53,10 @@ export class HiveService {
         return this.client.broadcast.comment(comment, key)
     }
 
+    async deleteComment(post: any): Promise {
+        return await this.client.database.call('delete_comment', [ post.author, post.permlink ])
+    }
+
     async getComments(query) {
         return this.client.database.call('get_discussions_by_comments', [query])
     }
