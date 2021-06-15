@@ -567,8 +567,7 @@ export class SpamService {
                             }
                         */
                         case 'vote':
-                            if (operation.voter == 'justyy' 
-                                && operation.weight < 0
+                            if (operation.weight < 0
                                 && ['r351574nc3', 'perpetuator', 'exifr', 'exifr0', 'salty-mcgriddles'].includes(operation.author)) {
                                 return this.processBullying(operation)
                             }
@@ -586,21 +585,3 @@ export class SpamService {
             })
     }
 }
-
-/*
-Actually, you are misled. You are delegating SP to @endingplagiarism. @endingplagiarism does **NOT** disable rewards on posts. Normally, when you downvote an account, rewards return to the pool so everyone on steemit can benefit and we're able to combat SPAM and plagiarism. However, this account after downvoting  goes and self-votes.
-
-**Here's why that's bad**
-Rewards that would have gone to the reward pool now instead go to @endingplagiarism. Instead, of battling SPAM now, what happens is we just redirect all the profit lost to SPAMMERS to @endingplagiarsm. Further, it doesn't get rid of SPAM or plagiarism. Rather, it proliferates it. Look at this:
-
-
-![image.png](https://cdn.steemitimages.com/DQmUpXeRjbhncMNCpQdfTwvJpnGy8C5Q1DiCTzXg5GLGxKB/image.png)
-
-Numerous transactions end up being spent on the steemit blockchain that are basically just spam.
-
-
-![image.png](https://cdn.steemitimages.com/DQmZB7E6rL3MYA1o6L8Geo4aqUgtVVNXK3xmn1jCrdWr3oB/image.png)
-
-
-Tell me how that is **NOT** vote farming?
- */
