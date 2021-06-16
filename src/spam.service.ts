@@ -547,8 +547,13 @@ export class SpamService {
         Logger.log(`Processing bullying for ${JSON.stringify(operation)}`)
         const comment = await this.api().getContent(operation.author, operation.permlink)
         const parent = await this.api().getContent(comment.parent_author, comment.parent_permlink)
-        this.api().deleteComment(this.author.wif, comment)
-        this.schedule_reply(parent, comment.body, FIVE_SECONDS)
+        try {
+            this.api().deleteComment(this.author.wif, comment)
+            this.schedule_reply(parent, comment.body, FIVE_SECONDS)
+        }
+        catch (error) {
+            Logger.error(`Error ${error}`)
+        }
     }
 
     run() {
