@@ -549,10 +549,15 @@ export class SpamService {
         const parent = await this.api().getContent(comment.parent_author, comment.parent_permlink)
         try {
             this.api().deleteComment(this.author.wif, comment)
-            this.schedule_reply(parent, comment.body, FIVE_SECONDS)
+            .then(() => {
+                this.schedule_reply(parent, comment.body, FIVE_SECONDS)
+            })
+            .catch((error) => {
+                Logger.error(`Error ${JSON.stringify(error)}`)
+            })
         }
         catch (error) {
-            Logger.error(`Error ${error}`)
+            Logger.error(`Error ${JSON.stringify(error)}`)
         }
     }
 
