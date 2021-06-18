@@ -574,7 +574,9 @@ export class SpamService {
                         case 'vote':
                             if (operation.weight < 0
                                 && ['r351574nc3', 'perpetuator', 'exifr', 'exifr0', 'salty-mcgriddles'].includes(operation.author)) {
-                                return this.processBullying(operation)
+                                return this.processBullying(operation).catch((error) => {
+                                    Logger.error(`Unable to process bullying ${JSON.stringify(error)}`)
+                                })
                             }
                         default:
                             break;
