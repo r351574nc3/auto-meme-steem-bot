@@ -17,6 +17,15 @@ export class SteemService {
         return Promise.resolve(this.client.database.call('get_content_replies', [author, permlink]));
     }
 
+    async getParentOf(author: string, permlink: string): Promise {
+        let post = await this.client.database.call('get_content', [author, permlink])
+        Logger.log(`Checking if is parent ${post.parent_author}/${post.parent_permlink}`)
+        while (post.parent_author !== '' && post.parent_permlink !== '') {
+            post = await this.client.database.call('get_content', [author, permlink])
+        }
+        Logger.log(`Found parent ${post}`)
+    }
+
     vote(posting_key, voter, author, permlink, weight): any {
         const key = PrivateKey.from(posting_key)
         return Promise.resolve(this.client.broadcast.vote(

@@ -667,8 +667,9 @@ export class ReplyService {
     }
 
     run() {
-        const permlink =  Math.random()
-        .toString(36).substring(7)
+        const permlink =  Math.random().toString(36).substring(7)
+        Logger.log("Got here")
+        this.api().getParentOf('r351574nc3', 'https://steemit.com/hive-175254/@r351574nc3/re-tfame3865-re-sumit71428-qo652q-20210207t171656118z')
 
         Logger.log("Streaming started")
         const retval = this.api().streamOperations(

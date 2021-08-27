@@ -24,6 +24,10 @@ export class HiveService {
         return Promise.resolve(this.client.database.call('get_content', [author, permlink]));
     }
 
+    getParentOf(author: string, permlink: string): any {
+        
+    }
+
     vote(posting_key, voter, author, permlink, weight): any {
         const key = PrivateKey.from(posting_key)
         return Promise.resolve(this.client.broadcast.vote(
